@@ -1,0 +1,21 @@
+20
+Arad 366 Zerind 75 Sibiu 140 Timisoara 118
+Zerind 374 Arad 75 Oradea 71
+Oradea 380 Zerind 71 Sibiu 151
+Timisoara 329 Arad 118 Lugoj 111
+Lugoj 244 Timisoara 111 Mehedi 70
+Mehedi 241 Drobeta 75 Lugoj 70
+Drobeta 242 Mehedi 75 Craiova 120
+Craiova 160 Drobeta 120 Rimnicu 146 Priest 138
+Sibiu 253 Arad 140 Oradea 151 Rimnicu 80 Pegasus 99
+Rimnicu 193 Sibiu 80 Craiova 146 Priest 97
+Pegasus 176 Sibiu 90 Bucharest 211
+Priest 100 Craiova 138 Bucharest 101 Rimnicu 97
+Bucharest 0 Priest 101 Pegasus 211 GUI 90 Uri 85
+GUI 77 Bucharest 90
+Uri 80 Bucharest 85 Hirosima 98 Vaslui 142
+Hirosima 151 Uri 98 Eforie 86
+Eforie 161 Hirosima 86
+Vaslui 199 Uri 142 Lassi 92
+Lassi 226 Vaslui 92 Neamt 87
+Neamt 234 Lassi 97
