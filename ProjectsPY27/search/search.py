@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -61,7 +61,6 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
-
 def tinyMazeSearch(problem):
     """
     Returns a sequence of moves that solves tinyMaze.  For any other maze, the
@@ -72,32 +71,46 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+def generalGraphSearch(problem, structure):
+
+    structure.push([(problem.getStartState(), "Stop", 0)])
+
+    visited = []
+
+    while not structure.isEmpty():
+        path = structure.pop()
+        curr_state = path[-1][0]
+
+        if problem.isGoalState(curr_state):
+            return [x[1] for x in path][1:]
+
+        if curr_state not in visited:
+            visited.append(curr_state)
+
+            for successor in problem.getSuccessors(curr_state):
+                if successor[0] not in visited:
+                    successorPath = path[:]
+                    successorPath.append(successor)
+                    structure.push(successorPath)
+
+    return False
+
+
 def depthFirstSearch(problem):
-    """
-    Search the deepest nodes in the search tree first.
+    stack = util.Stack()
+    return generalGraphSearch(problem, stack)
 
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    queue = util.Queue()
+    return generalGraphSearch(problem, queue)
+
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    cost = lambda path: problem.getCostOfActions([x[1] for x in path][1:])
+    pq = util.PriorityQueueWithFunction(cost)
+    return generalGraphSearch(problem, pq)
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -106,10 +119,11 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+
 def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    cost = lambda path: problem.getCostOfActions([x[1] for x in path][1:]) + heuristic(path[-1][0], problem)
+    pq = util.PriorityQueueWithFunction(cost)
+    return generalGraphSearch(problem, pq)
 
 
 # Abbreviations

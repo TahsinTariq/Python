@@ -101,3 +101,4 @@ Exercise*/*
 *.solution
 */test_cases/*
 */layouts/*
+*.pyc
