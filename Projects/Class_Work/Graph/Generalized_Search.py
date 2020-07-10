@@ -133,4 +133,5 @@ def generalSearch(Hash, structure, Start, End, path=nullPath, heuristics=nullHeu
                     structure.push(Node(kid, current, Hash[kid],
                                         pathCost=current.pathCost + path(kid, current.state)[0],
                                         h=heuristics(kid)))
-    print('Not Found')
+    # print('Not Found')
+    return 'Not Found'

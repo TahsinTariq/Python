@@ -46,6 +46,14 @@
 # x = (lambda x : x % 2 and 'odd' or 'even')
 # print(x(2))
 
-a = {'S': [('d', 3), ('e', 9), ('p', 1)], 'a': [], 'b': [('a', 2)], 'c': [('a', 2)], 'd': [('b', 1), ('c', 8), ('e', 2)], 'e': [('r', 2), ('h', 8)], 'f': [('c', 3), ('G', 2)], 'h': [('p', 1), ('q', 1)], 'p': [('q', 15)], 'q': [], 'r': [('f', 2)], 'G': []}
-for i , j in enumerate(a):
-    print(i,j)
+# a = {'S': [('d', 3), ('e', 9), ('p', 1)], 'a': [], 'b': [('a', 2)], 'c': [('a', 2)], 'd': [('b', 1), ('c', 8), ('e', 2)], 'e': [('r', 2), ('h', 8)], 'f': [('c', 3), ('G', 2)], 'h': [('p', 1), ('q', 1)], 'p': [('q', 15)], 'q': [], 'r': [('f', 2)], 'G': []}
+# for i , j in enumerate(a):
+#     print(i,j)
+
+# def addF(a: int, b:int =3) -> int:
+#     if not (isinstance(a, int) and isinstance(b, int)):
+#         raise ValueError("Both must be integers")
+#     return a+b
+# print(addF(2))
+for i in range(2*5):
+    print(i/2)
