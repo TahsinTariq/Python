@@ -20,5 +20,6 @@ print(timeit.timeit('''
 # print(arr)
 # print('shape of array :', arr.shape)
 
-d = [[1, 2], [1, 3], [1, 1], [2, 4], [2, 1]]
-print(sorted(d, key= lambda x: ()))
+# d = [[1, 2], [1, 3], [1, 1], [2, 4], [2, 1]]
+# print(sorted(d, key= lambda x: ()))
+print(input("write something"))

@@ -5,7 +5,7 @@ class Object:
         self.name = name
         self.weight = weight
         self.value = value
-        
+
 def addToList(grid, newObj):
     l = len(grid[0])
     grid.append([])
