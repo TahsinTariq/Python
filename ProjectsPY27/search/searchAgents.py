@@ -393,13 +393,11 @@ def cornersHeuristic(state, problem):
     corners = state[1] # These are the corner coordinates
     # walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     h = 0
-    while corners != []:
-        distances = []
-        for c in corners:
-            distances.append(manhatten(c, current))
-        h+= min(distances)
-        current = corners[distances.index(min(distances))]
-        corners.remove(current)
+    l = len(corners)
+    for i in range(l):
+        m = min(corners)
+        h+= manhatten(m, current)
+        current= m
 
     "*** YOUR CODE HERE ***"
 
