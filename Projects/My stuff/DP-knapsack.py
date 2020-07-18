@@ -1,5 +1,3 @@
-import numpy as np
-
 class Object:
     def __init__(self, name, value, weight):
         self.name = name
@@ -26,7 +24,6 @@ def addToList(grid, newObj):
 def knapSack(objList, cap):
     n = len(objList)
     grid = []
-    # grid = np.zeros((n+1, cap+1))
     for i in range(n+1):
         grid.append([])
         for j in range(cap+1):
@@ -37,15 +34,12 @@ def knapSack(objList, cap):
                 grid[i][j] = Object("Add to KnapSack:", 0,0)
             elif objList[i-1].weight > j:
                 grid[i][j] = grid[i-1][j]
-                # grid[i][j] = Object(grid[i-1][j].name,grid[i-1][j].value, grid[i-1][j].weight)
             else:
-                # grid[i][j] = max(grid[i-1][j - objList[i-1].weight]+objList[i-1].value, grid[i-1][j])
                 otherObject = grid[i - 1][j - objList[i - 1].weight]
                 if otherObject.value + objList[i - 1].value> grid[i - 1][j].value:
                     grid[i][j] = Object(f"{otherObject.name}\n{objList[i - 1].name}",
                                         otherObject.value + objList[i - 1].value,
                                         otherObject.weight + objList[i - 1].weight)
-                # else: grid[i][j] = Object(f"{grid[i - 1][j].name}", grid[i - 1][j].value ,grid[i - 1][j].weight)
                 else: grid[i][j] = grid[i - 1][j]
     return grid
 
