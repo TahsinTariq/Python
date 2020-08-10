@@ -25,7 +25,7 @@ def LCSubSequence(String1, String2):
     				grid[i][j] = grid[i-1][j-1]+1
     			else:
     				grid[i][j] = max(grid[i-1][j], grid[i][j-1])
-    print(grid)
+    # print(grid)
     return grid[-1][-1]
 
 
