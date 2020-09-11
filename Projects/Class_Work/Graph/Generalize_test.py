@@ -1,5 +1,7 @@
-from Class_Work.Graph import Search
-from Class_Work.Graph.Generalized_Search import *
+# from Class_Work.Graph import Search
+import Search
+# from Class_Work.Graph.Generalized_Search import *
+# from .Post_Graph import First_try_of_A_star
 
 Hash = {}
 # with open('graph_to_test_Unweighted', 'r') as file:
@@ -12,16 +14,16 @@ Hash = {}
 # print(bfs(Hash))
 
 
-# with open('graph_to_test_Weighted', 'r') as file:
-#     for line in file:
-#         sen = line.split()
-#         if not sen[0].isdigit():
-#             temp = []
-#             for i in range(len(sen[1::2])):
-#                 temp += [(sen[2*i+1], int(sen[2*i+2]))]
-#             Hash[sen[0]] = temp
-# print(Hash)
-# print(Search.ucs(Hash))
+with open('graph_to_test_Weighted', 'r') as file:
+    for line in file:
+        sen = line.split()
+        if not sen[0].isdigit():
+            temp = []
+            for i in range(len(sen[1::2])):
+                temp += [(sen[2*i+1], int(sen[2*i+2]))]
+            Hash[sen[0]] = temp
+print(Hash)
+print(Search.ucs(Hash))
 
 
 # h = {}
@@ -41,7 +43,7 @@ Hash = {}
 
 '''
     For bfs and dfs:
-    make a Hash where the keys are the nodes 
+    make a Hash where the keys are the nodes
     and the values are a list of all neighbours of that Node
 '''
 # with open('graph_to_test_Unweighted', 'r') as file:
@@ -87,23 +89,23 @@ Hash = {}
     In case of different search problems: make a function that generates the heuristics be it a normal one or lambda
 '''
 
-step = {}
-h = {}
-step['None'] = []
-with open('E:\Programme outputs\Python\Projects\Class_Work\Post_Graph\Romanian_roadmap', 'r') as file:
-    for line in file:
-        sen = line.split()
-        if not sen[0].isdigit():
-            temp = []
-            h[sen[0]] = int(sen[1])
-            for i in range(len(sen[2::2])):
-                temp += [(sen[2*i+2], int(sen[2*i+3]))]
-            Hash[sen[0]] = [i[0] for i in temp]
-            step[sen[0]] = [i[1] for i in temp]
-print(Hash)
-print(step)
-print(h)
-structure = PriorityQueueWithFunction(lambda node : node.pathCost + h[node.state])
-function = lambda x,prev: [step[prev][i] for i in range(len(Hash[prev])) if Hash[prev][i] == x]
-heuristicsFunction = lambda x: h[x]
-print(generalSearch(Hash, structure, 'Arad', 'Bucharest', path = function, heuristics = heuristicsFunction ))
+# step = {}
+# h = {}
+# step['None'] = []
+# with open('E:\Programme outputs\Python\Projects\Class_Work\Post_Graph\Romanian_roadmap', 'r') as file:
+#     for line in file:
+#         sen = line.split()
+#         if not sen[0].isdigit():
+#             temp = []
+#             h[sen[0]] = int(sen[1])
+#             for i in range(len(sen[2::2])):
+#                 temp += [(sen[2*i+2], int(sen[2*i+3]))]
+#             Hash[sen[0]] = [i[0] for i in temp]
+#             step[sen[0]] = [i[1] for i in temp]
+# print(Hash)
+# print(step)
+# print(h)
+# structure = PriorityQueueWithFunction(lambda node : node.pathCost + h[node.state])
+# function = lambda x,prev: [step[prev][i] for i in range(len(Hash[prev])) if Hash[prev][i] == x]
+# heuristicsFunction = lambda x: h[x]
+# print(generalSearch(Hash, structure, 'Arad', 'Bucharest', path = function, heuristics = heuristicsFunction ))

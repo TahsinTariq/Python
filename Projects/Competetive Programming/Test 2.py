@@ -12,20 +12,26 @@
 #     print(str(q[i]+1)+" "+str(w[i]+1)+" "+str(e[i]+1))
 #
 #
-from decimal import Decimal
-import math
+# from decimal import Decimal
+# import math
+#
+# n = list(map(int, input().split()))
+# a = sorted(n[1:], reverse= True)
+# d = math.floor(Decimal(n[0]) / Decimal(a[0]))
+# t = n[0]%a[0]
+# d += math.floor(Decimal(t)/ Decimal(a[1]))
+# t = t % a[1]
+# d += math.floor(Decimal(t)/ Decimal(a[2]))
+#
+# print(d)
 
-n = list(map(int, input().split()))
-a = sorted(n[1:], reverse= True)
-d = math.floor(Decimal(n[0]) / Decimal(a[0]))
-t = n[0]%a[0]
-d += math.floor(Decimal(t)/ Decimal(a[1]))
-t = t % a[1]
-d += math.floor(Decimal(t)/ Decimal(a[2]))
-
-print(d)
-
-
+_ = input()
+for num in list(map(int, input().split())):
+    c = 2
+    for j in range(2,int(num/2) +1):
+        if divmod(num, j)[1] ==0:
+            c+=1
+    print("YES" if c ==3 else "NO")
 
 
 

@@ -2,7 +2,7 @@ import heapq
 
 if __name__ == '__main__':
     print('Import this module to apply all four search in a general way. '
-          'In itself, it does nothing ar all ¯\_(ツ)_/¯ ')
+          'In itself, it does nothing at all ¯\_(ツ)_/¯ ')
 
 
 class Stack:

@@ -55,5 +55,7 @@
 #         raise ValueError("Both must be integers")
 #     return a+b
 # print(addF(2))
-for i in range(2*5):
-    print(i/2)
+# for i in range(2*5):
+#     print(i/2)
+
+print(abs(-1.5))
