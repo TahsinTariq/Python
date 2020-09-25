@@ -12,6 +12,7 @@ app.rectMode(CENTER)
 
 while True:
     app.background(200, 200, 200)
-    app.fill(255,0,0)
+    c = color(255, 0,0)
+    app.fill(c)
     app.rect(app.mouseX,app.mouseY,100,200)
     app.redraw()
