@@ -2,12 +2,12 @@ from googleapiclient.discovery import build
 import os, sys
 
 REMOVE = 'The Nature of Code'
-NAME = '5-Physics Libraries'
-ID = 'PLRqwX-V7Uu6akvoNKE4GAxf6ZeBYoJ4uh'
+NAME = '11: Neuroevolution'
+ID = 'PLRqwX-V7Uu6Yd3975YwxrR0x40XGJ_KGO'
 API_KEY = 'AIzaSyAuQpsmRRbJgd-0pktJ0bjP8dSwGjVL6rY'
 PATH = r'E:\Software\GitHub Desktop\website\_more\archive\nature-of-code'
 
-
+NAME = NAME.replace(': ', '-').replace(' ', '-')
 def uprint(*objects, sep=' ', end='\n', file=sys.stdout):
 	    enc = file.encoding
 	    if enc == 'UTF-8':
