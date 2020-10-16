@@ -58,4 +58,19 @@
 # for i in range(2*5):
 #     print(i/2)
 
-print(abs(-1.5))
+# print(abs(-1.5))
+
+# l = {1,2,3,4}
+# print(type(l))
+class test(object):
+	"""docstring for test"""
+	def __init__(self, arg):
+		self.arg = arg
+
+	def __add__(self, arg):
+		return self.arg - arg.arg
+
+a =test(5)
+b = test(6)
+c =a+b
+print(c)
