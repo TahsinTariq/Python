@@ -1,6 +1,177 @@
-from matplotlib import pyplot as plt
+class Point:
+    def __init__(self, x, y):
+        self.x, self.y = float(x), float(y)
 
-S = [
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __gt__(self, other):
+        if self.x > other.x:
+            return True
+        elif self.x == other.x:
+            return self.y > other.y
+        return False
+
+    def __lt__(self, other):
+        return not self > other
+
+    def __ge__(self, other):
+        if self.x > other.x:
+            return True
+        elif self.x == other.x:
+            return self.y >= other.y
+        return False
+
+    def __le__(self, other):
+        if self.x < other.x:
+            return True
+        elif self.x == other.x:
+            return self.y <= other.y
+        return False
+    def __add__(self, other):
+        return point(self.x+other.x, self.y+other.y)
+
+    def __sub__(self, other):
+        return point(self.x-other.x, self.y-other.y)
+
+    def __repr__(self):
+        return f"({self.x}, {self.y})"
+
+    def __hash__(self):
+        return hash(self.x)
+
+
+def _construct_points(list_of_tuples):
+    points = []
+    if list_of_tuples:
+        for p in list_of_tuples:
+            try:
+                points.append(Point(p[0], p[1]))
+            except (IndexError, TypeError):
+                print(
+                    f"Ignoring deformed point {p}. All points"
+                    " must have at least 2 coordinates."
+                )
+    return points
+
+
+def _validate_input(points):
+    if not points:
+        raise ValueError(f"Expecting a list of points but got {points}")
+
+    if isinstance(points, set):
+        points = list(points)
+
+    try:
+        if hasattr(points, "__iter__") and not isinstance(points[0], Point):
+            if isinstance(points[0], (list, tuple)):
+                points = _construct_points(points)
+            else:
+                raise ValueError(
+                    "Expecting an iterable of type Point, list or tuple. "
+                    f"Found objects of type {type(points[0])} instead"
+                )
+        elif not hasattr(points, "__iter__"):
+            raise ValueError(
+                f"Expecting an iterable object but got an non-iterable type {points}"
+            )
+    except TypeError:
+        print("Expecting an iterable of type Point, list or tuple.")
+        raise
+
+    return points
+
+
+def _det(a, b, c):
+    det = (a.x * b.y + b.x * c.y + c.x * a.y) - (a.y * b.x + b.y * c.x + c.y * a.x)
+    return det
+
+
+def convex_hull_recursive(points):
+
+    points = sorted(_validate_input(points))
+    n = len(points)
+
+    left_most_point = points[0]
+    right_most_point = points[n - 1]
+
+    convex_set = {left_most_point, right_most_point}
+    upper_hull = []
+    lower_hull = []
+
+    for i in range(1, n - 1):
+        det = _det(left_most_point, right_most_point, points[i])
+
+        if det > 0:
+            upper_hull.append(points[i])
+        elif det < 0:
+            lower_hull.append(points[i])
+
+    _construct_hull(upper_hull, left_most_point, right_most_point, convex_set)
+    _construct_hull(lower_hull, right_most_point, left_most_point, convex_set)
+
+    return sorted(convex_set)
+
+
+def _construct_hull(points, left, right, convex_set):
+    if points:
+        extreme_point = None
+        extreme_point_distance = float("-inf")
+        candidate_points = []
+
+        for p in points:
+            det = _det(left, right, p)
+
+            if det > 0:
+                candidate_points.append(p)
+
+                if det > extreme_point_distance:
+                    extreme_point_distance = det
+                    extreme_point = p
+
+        if extreme_point:
+            _construct_hull(candidate_points, left, extreme_point, convex_set)
+            convex_set.add(extreme_point)
+            _construct_hull(candidate_points, extreme_point, right, convex_set)
+class Triangle:
+    def __init__(self, a, b, c):
+        self.a, self.b, self.c = a, b, c
+
+class Triangulate:
+
+    def compare(p1, p2):
+        if p1 == p2:
+            return 0
+        elif p1 > p2:
+            return 1
+        else: return -1
+
+    def circumCircle(p, t):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def main():
+    points = [
         (0, 3),
         (2, 2),
         (1, 1),
@@ -12,43 +183,8 @@ S = [
         (2, -4),
         (1, -3),
     ]
+    results_recursive = convex_hull_recursive(points)
+    print(results_recursive)
 
-
-def quickHull(s):
-    convexHull = []
-    leftMost = min(s, key=lambda x:x[0])
-    rightMost = max(s, key=lambda x:x[0])
-    convexHull.append(leftMost)
-    convexHull.append(rightMost)
-    s.remove(rightMost)
-    s.remove(leftMost)
-    # print(s)
-    s1 = []
-    s2 = []
-    for pt in s:
-        n = ((rightMost[0] - leftMost[0]) * (pt[1] - leftMost[1]) -(rightMost[1] - leftMost[1]) * (pt[0] - leftMost[0]))
-        if n > 1:
-            s1.append(pt)
-        if n<1:
-            s2.append(pt)
-    # print(s1)
-    # print(s2)
-    findHull(s1, leftMost, rightMost)
-    findHull(s1, rightMost, leftMost)
-    print(convexHull)
-
-def findHull(sk, p, q):
-    if not sk:
-        return 0
-
-
-
-if __name__ == '__main__':
-    # print(sorted(S, reverse = True))
-    quickHull(S)
-
-    # S.sort(key = lambda x:x[0])
-    # plt.plot([i for i, j in S], [j for i, j in S], label='Python')
-    # plt.tight_layout()
-    # plt.grid(True)
-    # plt.show()
+if __name__ == "__main__":
+    main()

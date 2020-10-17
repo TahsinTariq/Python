@@ -62,15 +62,35 @@
 
 # l = {1,2,3,4}
 # print(type(l))
-class test(object):
-	"""docstring for test"""
-	def __init__(self, arg):
-		self.arg = arg
 
-	def __add__(self, arg):
-		return self.arg - arg.arg
 
-a =test(5)
-b = test(6)
-c =a+b
-print(c)
+
+# class test(object):
+# 	"""docstring for test"""
+# 	def __init__(self, arg):
+# 		self.arg = arg
+
+# 	def __add__(self, arg):
+# 		return self.arg - arg.arg
+
+# a =test(5)
+# b = test(6)
+# c =a+b
+# print(c)
+# print(dir(a))
+
+
+from math import atan2, degrees
+from collections import namedtuple
+def angle(P1, P2, P3):
+	return atan2(P3.y - P1.y, P3.x - P1.x) - atan2(P2.y - P1.y, P2.x - P1.x);
+
+pt = namedtuple('pt', ['x', 'y'])
+
+P1 = pt(0,0)
+P2 = pt(1,1)
+P3 = pt(0,1)
+
+print(degrees(angle(P1, P2, P3)))
+
+
