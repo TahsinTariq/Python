@@ -7,9 +7,10 @@ import keyboard
 # face = cv2.CascadeClassifier('haarcascade_eye.xml')
 # face = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 face = cv2.CascadeClassifier("haarcascade_frontalface_alt2.xml")
-cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 700)
+# for external USB cameras
+cap = cv2.VideoCapture(1)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 img_translation =0
 while True:
     hat = cv2.imread("hat.png")
