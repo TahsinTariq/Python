@@ -1,7 +1,7 @@
-'''import timeit
+import timeit
 
-print(timeit.timeit('''
-''', number=10000))'''
+print(timeit.timeit('''print("stuff")
+''', number=10000))
 
 # import numpy as np
 #
@@ -22,4 +22,4 @@ print(timeit.timeit('''
 
 # d = [[1, 2], [1, 3], [1, 1], [2, 4], [2, 1]]
 # print(sorted(d, key= lambda x: ()))
-print(input("write something"))
+# print(input("write something"))
