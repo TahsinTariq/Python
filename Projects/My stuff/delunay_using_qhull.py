@@ -299,7 +299,6 @@ def get_third_point(edge, triangles):
 def get_mate(edge, points, triangles):
     """Get a new mating point"""
     best_point, best_dist = None, None
-#     points = reshuffle_points(points)
     third = get_third_point(edge, triangles)
     print(f"for edge: {edge}")
     print(f"ptsList: {points}")
@@ -356,7 +355,6 @@ def update_frontier(frontier, point, used_edge):
     if fr_edge2 is not None:
         frontier = remove_edge_from_frontier(frontier, fr_edge2)
     else:
-#         frontier = np.append(frontier, np.array([edge2]), axis=0)
         frontier.append(edge2)
     return frontier
 
@@ -374,7 +372,6 @@ def norm(vector):
 
 def hull_edge(points):
     """First rib"""
-#     points = reshuffle_points(points)
     p1 = points[0]
     for point in points:
         if point[1] < p1[1]:
@@ -394,14 +391,9 @@ def hull_edge(points):
 def delunay(points):
     triangles = []
     frontier = [hull_edge(points)]
-    # hull_edges = convex_hull_recursive(points)
-    # print(hull_edges)
-    # frontier = [[hull_edges[0].x,hull_edges[0].y ], [hull_edges[1].x, hull_edges[0].y ]]
-    print(frontier)
-    # print(frontier[-1], frontier[:-1])
     while frontier:
         edge, frontier = frontier[-1], frontier[:-1]
-        mate = get_mate(edge, frontier, triangles)
+        mate = get_mate(edge, points, triangles)
         if mate is not None:
             frontier = update_frontier(frontier, mate, edge)
             triangle = [edge[0], edge[1], mate]
