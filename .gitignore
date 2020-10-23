@@ -102,3 +102,5 @@ Exercise*/*
 */test_cases/*
 */layouts/*
 *.pyc
+*/ipynb_checkpoints/*
+*-checkpoint.ipynb
