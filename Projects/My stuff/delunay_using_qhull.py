@@ -196,89 +196,217 @@ def _construct_hull(points, left, right, convex_set):
             convex_set.add(extreme_point)
             _construct_hull(candidate_points, extreme_point, right, convex_set)
 
-def cart2pol(x, y):
-    """Cartesian coordinates to polar"""
-    r = sqrt(x**2 + y**2)
-    φ = atan2(y, x)
-    return (r, φ)
 
-def cmp_angle(φ_1, φ_2):
-    """Angle comparison"""
-    return φ_2 - φ_1
+def det(A):
+    """
+    Create an upper triangle matrix using row operations.
+        Then product of diagonal elements is the determinant
+        :param A: the matrix to find the determinant for
+        :return: the determinant of the matrix
+    """
+    # Section 1: Establish n parameter and copy A
+    n = len(A)
+    AM = A[:]
+
+    # Section 2: Row manipulate A into an upper triangle matrix
+    for fd in range(n):  # fd stands for focus diagonal
+        if AM[fd][fd] == 0:
+            AM[fd][fd] = 1.0e-18  # Cheating by adding zero + ~zero
+        for i in range(fd+1, n):  # skip row with fd in it.
+            crScaler = AM[i][fd] / AM[fd][fd]  # cr stands for "current row".
+            for j in range(n):  # cr - crScaler * fdRow, one element at a time.
+                AM[i][j] = AM[i][j] - crScaler * AM[fd][j]
+
+    # Section 3: Once AM is in upper triangle form ...
+    product = 1.0
+    for i in range(n):
+        product *= AM[i][i]  # ... product of diagonals is determinant
+
+    return product
+
+def get_circle(a, b, c):
+    """Get the coordinates of the center and radius of a circle through three points"""
+    vec = [a[0]**2 + a[1]**2, b[0]**2 + b[1]**2, c[0]**2 + c[1]**2]
+    x_mat = [vec, [a[1], b[1], c[1]], [1]*3]
+    y_mat = [vec, [a[0], b[0], c[0]], [1]*3]
+    d_mat = [[a[0], b[0], c[0]], [a[1], b[1], c[1]], [1] * 3]
+    d = 2 * det(d_mat)
+    x = 1 / d * det(x_mat)
+    y = -1 / d * det(y_mat)
+    center = [x, y]
+#     r = norm(center - a)
+    r = norm([center[0]-a[0], center[1]-a[1]])
+    return center, r
+
+def get_circle_coords(center, r):
+    """Construct a circle by radius and center"""
+    circle = [[r, 180* phi/3.14159265] for phi in range(0, 180, 5)]
+    circle = [pol2cart(p[0], p[1]) + (center[0], center[1]) for p in circle]
+    return circle
+
+def orientIfSure(px, py, rx, ry, qx, qy):
+    l = (ry - py) * (qx - px)
+    r = (rx - px) * (qy - py)
+
+    if (abs(l - r) >= 3.3306690738754716e-16 * abs(l + r)):
+        return l - r
+    else:
+        return 0
+
+# a more robust orientation test that's stable in a given triangle (to fix robustness issues)
+def orient(rx, ry, qx, qy, px, py):
+    return (orientIfSure(px, py, rx, ry, qx, qy) or\
+        orientIfSure(rx, ry, qx, qy, px, py) or\
+        orientIfSure(qx, qy, px, py, rx, ry)) < 0
 
 def same_side(edge, p1, p2):
     """Check if points p1 and p2 are on the same side of edge"""
-    edge_vec = edge.a - edge.b
-    p1_vec, p2_vec = p1 - edge.a, p2 - edge.a
-    edge_angle = cart2pol(edge_vec.x, edge_vec.y)[1]
-    p1_angle, p2_angle = cart2pol(p1_vec.x, p1_vec.y)[1], cart2pol(p2_vec.x, p2_vec.y)[1]
-    p1_delta, p2_delta = cmp_angle(edge_angle, p1_angle), cmp_angle(edge_angle, p2_angle)
-    return p1_delta * p2_delta > 0
+    x1, y1 = edge[0][0], edge[0][1]
+    x2, y2 = edge[1][0], edge[1][1]
+    ax, ay = p1[0], p1[1]
+    bx, by = p2[0], p2[1]
+    return orient(x1,y1, x2, y2, ax, ay) == orient(x1,y1, x2, y2, bx, by)
 
 def get_distance(edge, center, r, candidate):
     """Distance from an edge to the other end of the circle.
      candidate indicates which side to read from"""
-    p1, p2, p0 = edge.a, edge.b, center
-    # edge_len = dist(p1.x, p1.y, p2.x, p2.y)
-    edge_len = sqrt((p1.x -p2.x)**2 +(p1.y-p2.y)**2)
-    sq = abs((p2.y-p1.y)*p0[0] - (p2.x-p1.x)*p0[1] + p2.x*p1.y - p2.y*p1.x)
+    p1, p2, p0 = edge[0], edge[1], center
+    edge_len = norm([p2[0] - p1[0], p2[1] - p1[1]])
+    sq = abs((p2[1]-p1[1])*p0[0] - (p2[0]-p1[0])*p0[1] + p2[0]*p1[1] - p2[1]*p1[0])
     dist = sq / edge_len
-    if same_side(edge, Point(center[0], center[0]), candidate):
+    if same_side(edge, center, candidate):
         return r + dist
     else:
         return r - dist
 
+def point_in_arr(arr, point):
+    """Are there points in the array"""
+    for i in range(len(arr)):
+        if arr[i][0] == point[0] and arr[i][1] == point[1]:
+            return i
+    return -1
+
 def get_third_point(edge, triangles):
     """Get conjugate point for an edge from known triangles"""
     for triangle in triangles:
-        # i1, i2 = point_in_arr(triangle, edge[0]), point_in_arr(triangle, edge[1])
-        if edge.inTriangle(triangle):
-            if edge == Edge(t.a, t.b):
-                return t.c
-            elif edge == Edge(t.b, t.c):
-                return t.a
-            else: return t.a
-        # if not (i1 == -1 or i2 == -1):
-        #     for i in range(len(triangle)):
-        #         if not (i1 == i or i2 == i):
-        #             return triangle[i]
+        i1, i2 = point_in_arr(triangle, edge[0]), point_in_arr(triangle, edge[1])
+        if not (i1 == -1 or i2 == -1):
+            for i in range(len(triangle)):
+                if not (i1 == i or i2 == i):
+                    return triangle[i]
     return None
 
 def get_mate(edge, points, triangles):
     """Get a new mating point"""
     best_point, best_dist = None, None
-    points = list(set([e.a for e in points] + [e.b for e in points]))
-    print(f'points: {points}')
+#     points = reshuffle_points(points)
     third = get_third_point(edge, triangles)
+    print(f"for edge: {edge}")
+    print(f"ptsList: {points}")
+    print(f" third point:{third}")
     for point in points:
-        # if point_in_arr(edge, point) > -1:
-        if edge.a == point or edge.b == point:
+        print(f"working on point: {point}")
+        if point_in_arr(edge, point) > -1:
+            print(f"exiting because point in arr: {point_in_arr(edge, point)}")
             continue
         if third is not None and same_side(edge, point, third):
+            print(f"exiting: {point} in none or same side as {third}")
             continue
-        # center, r = get_circle(*edge, point)
-        x, y , r = Triangle(edge.a, edge.b, point).circumCircle()
-        center = (x,y)
+        center, r = get_circle(edge[0], edge[1], point)
         dist = get_distance(edge, center, r, point)
+        print(f"  point: {point}\n  center: {center}\n   dist: {dist}")
         if best_point is None or dist < best_dist:
             best_point, best_dist = point, dist
-    print(f"Best Point : {best_point}")
+    print(f"best : {best_point}")
     return best_point
+
+def edge_in_frontier(frontier, edge):
+    """Is there a rib in the border"""
+    if len(frontier) == 0:
+        return None
+    for frontier_edge in frontier:
+        if frontier_edge == edge:
+            return frontier_edge
+        flipped = [frontier_edge[1], frontier_edge[0]]
+        if flipped == edge:
+            return frontier_edge
+    return None
+
+def remove_edge_from_frontier(frontier, edge):
+    """Remove edge from boundary"""
+    for i in range(len(frontier)):
+        if frontier[i] == edge:
+            frontier.remove(edge)
+            break
+    return frontier
+
+def update_frontier(frontier, point, used_edge):
+    """Refresh border"""
+    edge1 = [used_edge[0], point]
+    edge2 = [used_edge[1], point]
+    used_edge = edge_in_frontier(frontier, used_edge)
+    fr_edge1 = edge_in_frontier(frontier, edge1)
+    fr_edge2 = edge_in_frontier(frontier, edge2)
+    if used_edge is not None:
+        frontier = remove_edge_from_frontier(frontier, used_edge)
+    if fr_edge1 is not None:
+        frontier = remove_edge_from_frontier(frontier, fr_edge1)
+    else:
+        frontier.append(edge1)
+    if fr_edge2 is not None:
+        frontier = remove_edge_from_frontier(frontier, fr_edge2)
+    else:
+#         frontier = np.append(frontier, np.array([edge2]), axis=0)
+        frontier.append(edge2)
+    return frontier
+
+def cart2pol(x, y):
+    """Cartesian coordinates to polar"""
+    r = sqrt(x**2 + y**2)
+    φ = atan2(y, x)
+    return(r, φ)
+
+def norm(vector):
+    t = 0
+    for i in vector:
+        t = t+i*i
+    return sqrt(t)
+
+def hull_edge(points):
+    """First rib"""
+#     points = reshuffle_points(points)
+    p1 = points[0]
+    for point in points:
+        if point[1] < p1[1]:
+            p1 = point
+    p2 = points[0]
+    min_angle = 3 * 3.14159265
+    for point in points:
+        if point == p1: continue
+        vector = [point[0]-p1[0], point[1]-p1[1] ]
+        angle = cart2pol(*vector)[1]
+        if angle < min_angle:
+            min_angle, p2 = angle, point
+        elif angle == min_angle and norm(vector) > norm(p2 - p1):
+            p2 = point
+    return [p2, p1]
 
 def delunay(points):
     triangles = []
-    hull_edges = convex_hull_recursive(points)
+    frontier = [hull_edge(points)]
+    # hull_edges = convex_hull_recursive(points)
     # print(hull_edges)
-    frontier = [Edge(hull_edges[0], hull_edges[1])]
-    # print(frontier)
+    # frontier = [[hull_edges[0].x,hull_edges[0].y ], [hull_edges[1].x, hull_edges[0].y ]]
+    print(frontier)
     # print(frontier[-1], frontier[:-1])
     while frontier:
         edge, frontier = frontier[-1], frontier[:-1]
         mate = get_mate(edge, frontier, triangles)
         if mate is not None:
             frontier = update_frontier(frontier, mate, edge)
-            # triangle = np.array([*edge, mate])
+            triangle = [edge[0], edge[1], mate]
             triangles.append(triangle)
+    return triangles
 
 
 
@@ -296,21 +424,22 @@ if __name__ == "__main__":
 
     # print(results_recursive)
 
-    # delunay(points)
+    pts = delunay(points)
+    print(pts)
 
 
 
-    p = _validate_input(points)
-    e1 = Edge(p[0], p[1])
-    e2 = Edge(p[2], p[4])
-    e3 = Edge(p[1], p[2])
-    e4 = Edge(p[1], p[3])
-    t = Triangle(p[0], p[1], p[2])
-    val = e4.inTriangle(t)
-    # print(val)
+    # p = _validate_input(points)
+    # e1 = Edge(p[0], p[1])
+    # e2 = Edge(p[2], p[4])
+    # e3 = Edge(p[1], p[2])
+    # e4 = Edge(p[1], p[3])
+    # t = Triangle(p[0], p[1], p[2])
+    # val = e4.inTriangle(t)
+    # # print(val)
 
-    hull_edges = convex_hull_recursive(points)
-    # print(hull_edges)
-    frontier = [Edge(hull_edges[0], hull_edges[-2])]
-    get_mate(e2, [e2,e3,e4], [Triangle(p[0],p[1],p[3])])
-    print(frontier)
+    # hull_edges = convex_hull_recursive(points)
+    # # print(hull_edges)
+    # frontier = [Edge(hull_edges[0], hull_edges[-2])]
+    # get_mate(e2, [e2,e3,e4], [Triangle(p[0],p[1],p[3])])
+    # print(frontier)

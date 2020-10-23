@@ -109,7 +109,6 @@ class Delaunator:
         if (minRadius == math.inf):
             # order collinear points by dx (or dy if all x are identical)
             # and return the list as a hull
-            print("what")
             for i in range(0,n):
                 self._dists[i] = (coords[2 * i] - coords[0]) or (coords[2 * i + 1] - coords[1])
 
