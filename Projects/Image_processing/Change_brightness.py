@@ -1,5 +1,6 @@
+import numpy
 from PIL import Image
-
+import cv2 as cv
 
 def change_brightness(img: Image, level: float) -> Image:
     """
@@ -22,5 +23,9 @@ if __name__ == "__main__":
     # Load image
     with Image.open("shaan.jpg") as img:
         # Change brightness to 100
-        brigt_img = change_brightness(img, 100)
-        brigt_img.show()
+        bright_img = change_brightness(img, 100)
+        a = cv.cvtColor(numpy.array(bright_img), cv.COLOR_RGB2BGR)
+
+    while True:
+        cv.imshow("b", a)
+        cv.waitKey(30)
