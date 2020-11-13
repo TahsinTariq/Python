@@ -38,7 +38,6 @@ def UnsharpMask(img):
 def medianBlur(img):
     return cv2.medianBlur(img, 5)
 
-
 class capture_mouse:
 
     def __init__(self, window_name : str, x : list, y: list = None):
@@ -80,18 +79,17 @@ if __name__ == '__main__':
 
         # processed1 = brighten(img, window1.mouse())
         # processed2 = brighten2(img, window2.mouse())
-        processed1 = medianBlur(sharpen(UnsharpMask(img), window1.mouse()))
-        processed2 = medianBlur(sharpen(img, window2.mouse()))
-        processed3 = sharpen(processed2 ,window3.mouse())
+        # processed1 = medianBlur(sharpen(UnsharpMask(img), window1.mouse()))
+        processed1 = sharpen(medianBlur(img), window1.mouse())
+        # processed2 = medianBlur(sharpen(img, window2.mouse()))
+        # processed3 = sharpen(processed2 ,window3.mouse())
 
         window1.show(processed1)
-        window2.show(processed2)
-        window3.show(processed3)
+        # window2.show(processed2)
+        # window3.show(processed3)
 
         cv2.waitKey(1)
-
         if keyboard.is_pressed('q'):
             break
     cap.release()
     cv2.destroyAllWindows()
-
