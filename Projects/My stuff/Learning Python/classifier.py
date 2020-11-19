@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 import json
 
 labelList = [
@@ -24,13 +25,13 @@ for record in data['entries']:
     labels.append(labelList.index(record['label']))
 
 # print(colors)
-print(labels)
-colorTensor = tf.Variable(colors,  "int32")
+# print(labels)
+colorTensor = tf.Variable(colors,  "int32").numpy()
 labelTensor = tf.Variable(labels,  tf.strings)
-# print(tf.rank(labelTensor))
+print(colorTensor)
 
 oneHot = tf.one_hot(labelTensor, 9)
-print(oneHot)
+# print(oneHot)
 # labelTensor.dispose()
 
 
@@ -40,12 +41,49 @@ print(oneHot)
 # oneHot = tf.one_hot(indices, depth)
 # print(oneHot)
 
+# md = tf.sequential(
+#     tf.layers.dense({
+#         units: 15,
+#         inputShape: [3],
+#         activation: 'sigmoid'
+#       })
+#     tf.layers.dense({
+#         units: 9,
+#         activation: 'softmax'
+#       })
+# )
 
-# model = tf.keras.Sequential([
-#     tf.keras.layers.Dense(15, activation='relu'),
-#     tf.keras.layers.Dense(10)
-# ])
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(10, activation='sigmoid'),
+    tf.keras.layers.Dense(20, activation='tanh'),
+    tf.keras.layers.Dense(10, activation='sigmoid'),
+    tf.keras.layers.Dense(9, activation='softmax')
+])
 
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.1),
+              loss=tf.keras.losses.CategoricalCrossentropy(),
+              metrics=['accuracy'])
+
+model.fit(colorTensor, oneHot, epochs=50, shuffle=True, validation_split=0.1)
+
+model.summary()
+
+cols = [[10, 255, 10],
+        [50, 60, 40],
+        [220, 20, 10],
+        [150, 50, 200],
+        [90, 250, 100],
+        [0, 150, 150],
+        [20, 10, 250]]
+# myColor = tf.Variable([10, 255, 10],  "int32")
+myColor = np.array([[220, 20, 10]])
+# for col in cols:
+# pred = model.predict(np.array([col]))
+pred = model.predict(myColor)
+# print(f"prediction : {np.argmax(pred)}")
+pos = int(np.argmax(pred))
+# print(pred)
+print(f"Prediction: \n\toneHot: {pred}\n\targMax: {pos}\n\tType: {labelList[pos]}")
 
 # import os
 # import numpy as np
