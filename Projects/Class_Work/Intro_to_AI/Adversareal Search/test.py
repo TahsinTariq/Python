@@ -5,46 +5,43 @@ def MinMax(node, depth, Is_Max):
         value = -float('inf')
         pval = -float('inf')
         for child in OwO[node]:
-            # print(child)
-            pval = value
+            print(child)
             value = max(value, MinMax(child, depth, 0))
             if pval < value:
                 pval = value
-                parents[child] = node
+                path[child] = node
         return value
     else:
         value = float('inf')
         pval = float('inf')
         for child in OwO[node]:
-            # print(child)
-            pval = value
+            print(child)
             value = min(value, MinMax(child, depth, 1))
             if pval > value:
                 pval = value
-                parents[child] = node
+                path[child] = node
         return value
 
 
 def find(p):
-    path.append(p)
+    print(p)
     if p == "A":
         return None
     else:
-        find(parents[p])
+        find(path[p])
 
 
 if __name__ == '__main__':
     OwO = {}
     MinOrMax = {}
     TerminalValue = {}
-    parents = {}
-    path = []
+    path = {}
     # File contains Initial node.
     # If a node takes the max value, it is assigned 1; if min, 0. If it is a terminal node, it's assigned -1
     # Then it contains the child nodes number following child node names
     # Terminal nodes have 0 child nodes and one value
 
-    with open('minmax_cw', "r") as f:
+    with open('minmax_CW', "r") as f:
         for line in f:
             arr = line.split()
             if int(arr[1]) >= 0:
@@ -64,7 +61,8 @@ if __name__ == '__main__':
                 print("Node: " + i + "\nType: MIN" + "\nChild:")
             for j in OwO[i]:
                 print(j)
-            print("Number of Chlidren: " + str(len(OwO[i])) + "\n")
+            print("Number of Chlidren: " + str(len(OwO[i])))
+            print("\n")
         for i in TerminalValue.keys():
             print("Node: " + i + "\nCondition: Terminal" + "\nValue: " + str(TerminalValue[i]) + "\n")
 
@@ -73,7 +71,7 @@ if __name__ == '__main__':
         if TerminalValue[key] == ans:
             find(key)
             break
+
     print('\nvalue :  ' + str(ans))
-    path.reverse()
-    print("The path is: " + str(path))
-    print(parents)
+
+    print(path)
