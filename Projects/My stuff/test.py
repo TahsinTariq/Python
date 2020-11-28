@@ -159,5 +159,8 @@
 #     eq2 = bx - by/m + c/m
 #     return eq1*eq2 >0
 
-import tensorflow as tf
-print(tf.version.VERSION)
+# import tensorflow as tf
+# print(tf.version.VERSION)
+
+# import datetime
+# print(datetime.datetime.now().strftime("%H:%M:%S"))

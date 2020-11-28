@@ -1,6 +1,6 @@
 # from Class_Work.Graph import Search
 import Search
-# from Class_Work.Graph.Generalized_Search import *
+# from Class_Work.Intro_to_AI.Graph.Generalized_Search import *
 # from .Post_Graph import First_try_of_A_star
 
 Hash = {}

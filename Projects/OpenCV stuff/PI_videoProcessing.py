@@ -1,7 +1,8 @@
 import cv2
+import datetime
+import keyboard
 import numpy as np
 from PIL import Image, ImageFilter
-import keyboard
 
 def remap(value, source_s, source_e, start, end):
     return start + ((value - source_s) / (source_e-source_s)) * (end-start)
@@ -58,6 +59,9 @@ class capture_mouse:
             self.val[0] = remap(x, 0, 640, *self.x)
             if not self.y==None:
                 self.val[1] = remap(y, 0, 480, *self.y)
+        if event == cv2.EVENT_LBUTTONDBLCLK:
+            print("Clicked")
+            cv2.imwrite(f"photos/{str(datetime.datetime.now().strftime('%H_%M_%S'))}.png", processed3)
             # print(f"brightness : {self.val}")
 
     def show(self, img):
@@ -83,12 +87,17 @@ if __name__ == '__main__':
         processed1 = sharpen(medianBlur(img), window1.mouse())
         # processed2 = medianBlur(sharpen(img, window2.mouse()))
         # processed3 = sharpen(processed2 ,window3.mouse())
+        processed3 = sharpen(processed1 ,window3.mouse())
 
         window1.show(processed1)
         # window2.show(processed2)
-        # window3.show(processed3)
+        window3.show(processed3)
 
         cv2.waitKey(1)
+        # if keyboard.is_pressed('s'):
+        #     name  = str(datetime.datetime.now().strftime('%H_%M_%S'))
+        #     print(type(name))
+        #     cv2.imwrite(f"photos/{name}.png", img)
         if keyboard.is_pressed('q'):
             break
     cap.release()
